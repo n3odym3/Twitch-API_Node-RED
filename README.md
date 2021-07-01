@@ -19,6 +19,7 @@ This demo provides exemples to get the :
 - API Cient Secret
 
 ## Setup
+![Flow Setup](/Setup.png)
 - [Import the flow](https://nodered.org/docs/user-guide/editor/workspace/import-export)
 - Double clic on the "change" node
 - Add your Client ID
