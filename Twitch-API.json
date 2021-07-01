@@ -1,0 +1,826 @@
+[
+    {
+        "id": "6426a668.232ab8",
+        "type": "group",
+        "z": "5d61f979.c6ead8",
+        "name": "Channel Info ",
+        "style": {
+            "stroke": "#000000",
+            "fill": "#b797cf",
+            "fill-opacity": "0.47",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "48de53fa.96680c",
+            "17d5acf9.b6b093",
+            "c4a4a8f8.66d078",
+            "65fc6478.4c291c",
+            "b9fb8f69.b1108",
+            "d397e383.bc444",
+            "17519f23.b9cfa1",
+            "8589f78a.bcdda8",
+            "9035d5b4.27d3e8",
+            "e92aabc8.32c568"
+        ],
+        "x": 34,
+        "y": 209,
+        "w": 982,
+        "h": 242
+    },
+    {
+        "id": "48de53fa.96680c",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Set ID and Token",
+        "func": "let channel = flow.get(\"Channel\")||\"ioodyme\";\n\nif(msg.topic ==\"custom\"){\n    channel = msg.payload;\n}\n\nmsg = {\n    \"headers\" : {\n        \"Client-ID\" : flow.get('ClientID'),\n        \"Authorization\" : flow.get('Token'),\n        \"Accept\" : \"application/vnd.twitchtv.v5+json\"\n    },\n    \"url\" : \"https://api.twitch.tv/helix/search/channels?query=\" + channel\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 340,
+        "y": 330,
+        "wires": [
+            [
+                "17d5acf9.b6b093"
+            ]
+        ]
+    },
+    {
+        "id": "17d5acf9.b6b093",
+        "type": "http request",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Channel Info",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 520,
+        "y": 330,
+        "wires": [
+            [
+                "d397e383.bc444"
+            ]
+        ]
+    },
+    {
+        "id": "c4a4a8f8.66d078",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Channel info",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 330,
+        "wires": [
+            [
+                "48de53fa.96680c"
+            ]
+        ]
+    },
+    {
+        "id": "65fc6478.4c291c",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Lang",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 250,
+        "wires": []
+    },
+    {
+        "id": "b9fb8f69.b1108",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "custom",
+        "payload": "demo",
+        "payloadType": "str",
+        "x": 150,
+        "y": 290,
+        "wires": [
+            [
+                "48de53fa.96680c"
+            ]
+        ]
+    },
+    {
+        "id": "d397e383.bc444",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Split info",
+        "func": "const lang = {\n    \"payload\" : msg.payload.data[0].broadcaster_language\n};\n\nconst channel_id = {\n    \"payload\" : msg.payload.data[0].id\n};\n\nconst title= {\n    \"payload\" : msg.payload.data[0].title\n};\n\nconst game_name = {\n    \"payload\" : msg.payload.data[0].game_name\n};\n\nconst thumbnail= {\n    \"payload\" : msg.payload.data[0].thumbnail_url\n};\n\nreturn [lang, channel_id, title, game_name, thumbnail];",
+        "outputs": 5,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 710,
+        "y": 330,
+        "wires": [
+            [
+                "65fc6478.4c291c"
+            ],
+            [
+                "17519f23.b9cfa1"
+            ],
+            [
+                "8589f78a.bcdda8"
+            ],
+            [
+                "9035d5b4.27d3e8"
+            ],
+            [
+                "e92aabc8.32c568"
+            ]
+        ]
+    },
+    {
+        "id": "17519f23.b9cfa1",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Channel ID",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 290,
+        "wires": []
+    },
+    {
+        "id": "8589f78a.bcdda8",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Title",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 330,
+        "wires": []
+    },
+    {
+        "id": "9035d5b4.27d3e8",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Game",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 370,
+        "wires": []
+    },
+    {
+        "id": "e92aabc8.32c568",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "6426a668.232ab8",
+        "name": "Thumbnail",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 410,
+        "wires": []
+    },
+    {
+        "id": "d02b17d6.488438",
+        "type": "group",
+        "z": "5d61f979.c6ead8",
+        "name": "Stream info",
+        "style": {
+            "label": true,
+            "stroke": "#000000",
+            "fill": "#9363b7",
+            "fill-opacity": "0.41",
+            "color": "#000000"
+        },
+        "nodes": [
+            "aaa3fbbd.1f3888",
+            "92223932.1549e8",
+            "395f2d6a.8f2c12",
+            "428eedd4.a4c984",
+            "26708c32.ebe4b4",
+            "8d746c18.7099e",
+            "e4f3aa58.154a98",
+            "ea554f07.bb25f",
+            "a3b7fcbd.d34c1",
+            "83936585.ecf928",
+            "b6b14609.075f18",
+            "db29c566.7a4e78"
+        ],
+        "x": 34,
+        "y": 459,
+        "w": 982,
+        "h": 202
+    },
+    {
+        "id": "aaa3fbbd.1f3888",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "State/Viewers",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 520,
+        "wires": [
+            [
+                "e4f3aa58.154a98"
+            ]
+        ]
+    },
+    {
+        "id": "92223932.1549e8",
+        "type": "http request",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "API follows",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 550,
+        "y": 600,
+        "wires": [
+            [
+                "26708c32.ebe4b4"
+            ]
+        ]
+    },
+    {
+        "id": "395f2d6a.8f2c12",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Set ID and Token",
+        "func": "const channel_id = flow.get(\"ChannelID\")||\"564492369\";\n\nmsg = {\n    \"headers\" : {\n        \"Client-ID\" : flow.get('ClientID'),\n        \"Authorization\" : flow.get('Token'),\n        \"Accept\" : \"application/vnd.twitchtv.v5+json\"\n    },\n    \"url\" : \"http://api.twitch.tv/helix/users/follows?to_id=\" + channel_id\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 350,
+        "y": 600,
+        "wires": [
+            [
+                "92223932.1549e8"
+            ]
+        ]
+    },
+    {
+        "id": "428eedd4.a4c984",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Followers",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 600,
+        "wires": [
+            [
+                "395f2d6a.8f2c12"
+            ]
+        ]
+    },
+    {
+        "id": "26708c32.ebe4b4",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Followers",
+        "func": "out1 = {\n    \"payload\":msg.payload.total\n}\nout2 = {\n    \"payload\" :msg.payload.data[0].from_login\n}    \nreturn [out1, out2];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 700,
+        "y": 600,
+        "wires": [
+            [
+                "a3b7fcbd.d34c1"
+            ],
+            [
+                "83936585.ecf928"
+            ]
+        ]
+    },
+    {
+        "id": "8d746c18.7099e",
+        "type": "http request",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Stream status",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 540,
+        "y": 520,
+        "wires": [
+            [
+                "ea554f07.bb25f"
+            ]
+        ]
+    },
+    {
+        "id": "e4f3aa58.154a98",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Set ID and Token",
+        "func": "const channel = flow.get(\"Channel\")||\"ioodyme\";\n\nmsg = {\n    \"headers\" : {\n        \"Client-ID\" : flow.get('ClientID'),\n        \"Authorization\" : flow.get('Token'),\n        \"Accept\" : \"application/vnd.twitchtv.v5+json\"\n    },\n    \"url\" : \"https://api.twitch.tv/helix/streams?&user_login=\" + channel\n}\nreturn msg;   \n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 350,
+        "y": 520,
+        "wires": [
+            [
+                "8d746c18.7099e"
+            ]
+        ]
+    },
+    {
+        "id": "ea554f07.bb25f",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "State/Viewers",
+        "func": "if(msg.payload.data[0]){\n    Status = {\n        \"payload\" : true\n    }\n    Viewers = {\n        \"payload\" :  msg.payload.data[0].viewer_count\n    }\n    return [Status, Viewers];\n}\nelse {\n    Status = {\n        \"payload\" : false\n    }\n    return [Status, null];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 720,
+        "y": 520,
+        "wires": [
+            [
+                "b6b14609.075f18"
+            ],
+            [
+                "db29c566.7a4e78"
+            ]
+        ]
+    },
+    {
+        "id": "a3b7fcbd.d34c1",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Followers",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "83936585.ecf928",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Last follower",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "b6b14609.075f18",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Stream State",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "db29c566.7a4e78",
+        "type": "debug",
+        "z": "5d61f979.c6ead8",
+        "g": "d02b17d6.488438",
+        "name": "Viewers",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "fbd6b9fb.b67658",
+        "type": "group",
+        "z": "5d61f979.c6ead8",
+        "name": "API Settings",
+        "style": {
+            "stroke": "#000000",
+            "fill": "#ff3f3f",
+            "fill-opacity": "0.42",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "bdda4a94.193908",
+            "beab0c19.6d93b",
+            "966a372a.a07628",
+            "8aa01b45.37c848",
+            "971b2f18.0aff4",
+            "64229525.7adacc",
+            "a9ab8eef.baa2",
+            "566f2428.09694c",
+            "b8602e99.36c57",
+            "71a1027.8d9b2fc"
+        ],
+        "x": 34,
+        "y": 19,
+        "w": 812,
+        "h": 182
+    },
+    {
+        "id": "bdda4a94.193908",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Get bearer Token",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 110,
+        "wires": [
+            [
+                "71a1027.8d9b2fc"
+            ]
+        ]
+    },
+    {
+        "id": "beab0c19.6d93b",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Settings",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "966a372a.a07628"
+            ]
+        ]
+    },
+    {
+        "id": "966a372a.a07628",
+        "type": "change",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Client ID, User secret et Channel",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ClientID",
+                "pt": "flow",
+                "to": "CLIENT ID",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "ClientSecret",
+                "pt": "flow",
+                "to": "CLIENT SECRET",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "Channel",
+                "pt": "flow",
+                "to": "ioodyme",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8aa01b45.37c848",
+        "type": "http request",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 540,
+        "y": 110,
+        "wires": [
+            [
+                "971b2f18.0aff4"
+            ]
+        ]
+    },
+    {
+        "id": "971b2f18.0aff4",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Save Bearer",
+        "func": "const input = msg.payload;\nconst Token = \"Bearer \" + input[\"access_token\"];\nflow.set('Token', Token);\nmsg.payload = Token;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 710,
+        "y": 110,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "64229525.7adacc",
+        "type": "inject",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Get channel ID",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "a9ab8eef.baa2"
+            ]
+        ]
+    },
+    {
+        "id": "a9ab8eef.baa2",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Request channel ID",
+        "func": "let channel = flow.get(\"Channel\")||\"ioodyme\";\nmsg = {\n    \"headers\" : {\n        \"Client-ID\" : flow.get('ClientID'),\n        \"Authorization\" : flow.get('Token'),\n        \"Accept\" : \"application/vnd.twitchtv.v5+json\"\n    },\n    \"url\" : \"https://api.twitch.tv/helix/search/channels?query=\" + channel\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "566f2428.09694c"
+            ]
+        ]
+    },
+    {
+        "id": "566f2428.09694c",
+        "type": "http request",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Channel ID",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "b8602e99.36c57"
+            ]
+        ]
+    },
+    {
+        "id": "b8602e99.36c57",
+        "type": "change",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ChannelID",
+                "pt": "flow",
+                "to": "msg.payload.data[0].id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "71a1027.8d9b2fc",
+        "type": "function",
+        "z": "5d61f979.c6ead8",
+        "g": "fbd6b9fb.b67658",
+        "name": "Request token",
+        "func": "const client_id = flow.get(\"ClientID\");\nconst client_secret = flow.get(\"ClientSecret\");\n\nmsg.url = \"https://id.twitch.tv/oauth2/token?\";\nmsg.url += \"client_id=\" + client_id;\nmsg.url += \"&client_secret=\" + client_secret;\nmsg.url += \"&grant_type=client_credentials\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 340,
+        "y": 110,
+        "wires": [
+            [
+                "8aa01b45.37c848"
+            ]
+        ]
+    }
+]
