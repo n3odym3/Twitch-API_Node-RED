@@ -28,5 +28,4 @@ This demo provides exemples to get the :
 - Clic on "get bearer token" to generate and save the authentication token
 - Clic on "get channel ID" (the channel ID will be used for some requests)
 
-
-
+[Related Youtube video](https://www.youtube.com/watch?v=H5YmgHIh8i4)
